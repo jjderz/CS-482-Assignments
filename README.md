@@ -9,5 +9,7 @@ app_file: app.py
 pinned: false
 ---
 
-### Hugging Face Spacing
-https://huggingface.co/spaces/jjderz/finetuning-language-models-tweets
+
+
+
+Hugging Face: https://huggingface.co/spaces/jjderz/finetuning-language-models-tweets
