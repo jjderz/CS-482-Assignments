@@ -24,4 +24,4 @@ tensor_input = token(input_text, return_tensors="tf")
 
 if s.button("Submit", type="primary"):
     sentiment_results = sentiment_pipeline(input_text)[0]
-    s.write(f"The sentiment is {sentiment_results}.")
+    s.write(f"The text is considered {sentiment_results}.")
