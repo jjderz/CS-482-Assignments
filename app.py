@@ -7,7 +7,7 @@ from transformers import pipeline
 
 st.title("Toxic Tweets")
 
-demo = """Just took a stroll through the park and the sun is shining bright ☀️🌳 There's something so rejuvenating about being surrounded by nature! Hope you all have a wonderful day! 🌸😊 #grateful #happiness #naturelovers"""
+demo = """Just took a stroll through the park and the sun is shining bright ☀️🌳 There's something so rejuvenating about being surrounded by nature! Hope you all have a wonderful day! 🌸😊 #grateful #happiness #naturelovers#flexinonthekids"""
 
 text = st.text_area("Input text", demo, height=275)
 
