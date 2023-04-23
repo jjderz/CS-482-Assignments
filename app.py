@@ -11,11 +11,6 @@ st.title("Toxic Comment Classifier")
 default_text = "Enter your text here."
 input_text = st.text_area("Input text", default_text, height=275)
 
-model_choice = st.selectbox(
-    "Select the model you want to use below.",
-   
-)
-
 model_choice = {
     "Fine-tuned Toxicity Model": "jjderz/toxic-classifier",
 }
