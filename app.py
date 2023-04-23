@@ -12,10 +12,8 @@ st.title("Toxic Comment Classifier")
 default_text = "Enter your text here."
 input_text = st.text_area("Input text", default_text, height=275)
 
-# Load the fine-tuned model names
 hf_api = HfApi()
-all_models = hf_api.list_models()
-models = [model.modelId for model in all_models if model.author in ("jjderz",)]
+models = hf_api.list_models(author="jjderz")
 
 model_choice = st.selectbox(
     "Select the model you want to use below.",
