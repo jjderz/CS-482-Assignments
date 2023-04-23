@@ -15,9 +15,13 @@ input_text = st.text_area("Input text", default_text, height=275)
 hf_api = HfApi()
 models = hf_api.list_models(author="jjderz")
 
+model_names = []
+for model in models:
+    model_names.append(model.model_id)
+
 model_choice = st.selectbox(
     "Select the model you want to use below.",
-    [model.model_id for model in models],  # Extract model names from ModelInfo objects
+    model_names,
 )
 
 tokenizer = AutoTokenizer.from_pretrained(model_choice)
