@@ -20,9 +20,6 @@ model_choice = st.selectbox(
     models,
 )
 
-# Extract the model name from the model_choice variable
-model_name = model_choice.split("/")[-1]
-
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 sequence_classifier = TFAutoModelForSequenceClassification.from_pretrained(model_name)
 sentiment_pipeline = pipeline(
