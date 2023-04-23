@@ -20,7 +20,7 @@ model_choice = {
     "Fine-tuned Toxicity Model": "jjderz/toxic-classifier",
 }
 
-chosen_model = st.selectbox("Select Model", options=list(model_options.keys()))
+chosen_model = st.selectbox("Select Model", options=list(model_choice.keys()))
 
 tokenizer = AutoTokenizer.from_pretrained(chosen_model)
 sequence_classifier = TFAutoModelForSequenceClassification.from_pretrained(chosen_model)
