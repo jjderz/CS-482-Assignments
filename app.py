@@ -5,17 +5,20 @@ from transformers import (
     TFAutoModelForSequenceClassification,
     pipeline,
 )
+from huggingface_hub import HfApi
 
 st.title("Toxic Comment Classifier")
 
 default_text = "Enter your text here."
 input_text = st.text_area("Input text", default_text, height=275)
 
+# Load the fine-tuned model names
+hf_api = HfApi()
+models = hf_api.list_models(organization="jjderz")
+
 model_choice = st.selectbox(
     "Select the model you want to use below.",
-    (
-        "finetuned_toxic_model",
-    ),
+    models,
 )
 
 tokenizer = AutoTokenizer.from_pretrained(model_choice)
@@ -29,13 +32,20 @@ sentiment_pipeline = pipeline(
 
 if st.button("Submit", type="primary"):
     sentiment_results = sentiment_pipeline(input_text)[0]
-    toxic_score = sentiment_results["scores"][1]
+    
+    # Find the highest scoring toxicity type
+    highest_toxicity_label = ""
+    highest_toxicity_score = 0
+    for result in sentiment_results:
+        if result["score"] > highest_toxicity_score:
+            highest_toxicity_label = result["label"]
+            highest_toxicity_score = result["score"]
 
     # Create a DataFrame to display the results
     data = {
         "Tweet": [input_text[:50] + "..." if len(input_text) > 50 else input_text],
-        "Toxicity Class": ["Toxic" if toxic_score > 0.5 else "Non-toxic"],
-        "Probability": [f"{toxic_score:.2f}"],
+        "Toxicity Class": [highest_toxicity_label],
+        "Probability": [f"{highest_toxicity_score:.2f}"],
     }
     df = pd.DataFrame(data)
     st.write(df)
