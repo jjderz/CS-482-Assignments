@@ -14,7 +14,8 @@ input_text = st.text_area("Input text", default_text, height=275)
 
 # Load the fine-tuned model names
 hf_api = HfApi()
-models = hf_api.list_models(organization="jjderz")
+all_models = hf_api.list_models()
+models = [model.modelId for model in all_models if model.author in ("jjderz",)]
 
 model_choice = st.selectbox(
     "Select the model you want to use below.",
