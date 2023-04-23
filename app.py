@@ -5,27 +5,25 @@ from transformers import (
     TFAutoModelForSequenceClassification,
     pipeline,
 )
-from huggingface_hub import HfApi
 
 st.title("Toxic Comment Classifier")
 
 default_text = "Enter your text here."
 input_text = st.text_area("Input text", default_text, height=275)
 
-hf_api = HfApi()
-models = hf_api.list_models(author="jjderz")
-
-model_names = []
-for model in models:
-    model_names.append(model.model_id)
-
 model_choice = st.selectbox(
     "Select the model you want to use below.",
-    model_names,
+   
 )
 
-tokenizer = AutoTokenizer.from_pretrained(model_choice)
-sequence_classifier = TFAutoModelForSequenceClassification.from_pretrained(model_choice)
+model_choice = {
+    "Fine-tuned Toxicity Model": "jjderz/toxic-classifier",
+}
+
+chosen_model = st.selectbox("Select Model", options=list(model_options.keys()))
+
+tokenizer = AutoTokenizer.from_pretrained(chosen_model)
+sequence_classifier = TFAutoModelForSequenceClassification.from_pretrained(chosen_model)
 sentiment_pipeline = pipeline(
     "sentiment-analysis",
     model=sequence_classifier,
