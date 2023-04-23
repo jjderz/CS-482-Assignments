@@ -17,11 +17,11 @@ models = hf_api.list_models(author="jjderz")
 
 model_choice = st.selectbox(
     "Select the model you want to use below.",
-    models,
+    [model.model_id for model in models],  # Extract model names from ModelInfo objects
 )
 
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-sequence_classifier = TFAutoModelForSequenceClassification.from_pretrained(model_name)
+tokenizer = AutoTokenizer.from_pretrained(model_choice)
+sequence_classifier = TFAutoModelForSequenceClassification.from_pretrained(model_choice)
 sentiment_pipeline = pipeline(
     "sentiment-analysis",
     model=sequence_classifier,
@@ -31,7 +31,7 @@ sentiment_pipeline = pipeline(
 
 if st.button("Submit", type="primary"):
     sentiment_results = sentiment_pipeline(input_text)[0]
-    
+
     # Find the highest scoring toxicity type
     highest_toxicity_label = ""
     highest_toxicity_score = 0
