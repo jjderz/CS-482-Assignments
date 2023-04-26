@@ -39,6 +39,8 @@ This Jupyter notebook contains the code to train a BERT-based model for multi-la
 
 8. **Model training**: Compiling and training the model using the encoded dataset.
 
+9. **Upload to Huggingface**: Utilizing Huggingface cli we push the model and the tokenizer to the hub.
+
 ##### app.py
 
 This Python script is used to deploy the trained model as a web application using the Streamlit library. The main components of this script are:
