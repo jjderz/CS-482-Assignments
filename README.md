@@ -8,9 +8,7 @@ sdk_version: 1.17.0
 app_file: app.py
 pinned: false
 ---
-
-
-
+Google Sites Landing Page: https://sites.google.com/njit.edu/finetunedtoxiccommentmodel/home
 
 Hugging Face: https://huggingface.co/spaces/jjderz/finetuning-language-models-tweets
 
