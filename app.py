@@ -1,48 +1,61 @@
 import streamlit as st
-import pandas as pd
+from transformers import AutoTokenizer
 from transformers import (
-    AutoTokenizer,
-    TFAutoModelForSequenceClassification,
-    pipeline,
+    TFAutoModelForSequenceClassification as SequenceClassificationModel,
 )
+from transformers import pipeline
 
 st.title("Toxic Comment Classifier")
 
-default_text = "Enter your text here."
-input_text = st.text_area("Input text", default_text, height=275)
+sample_text = "I hate you, you suck."
 
-model_choice = {
-    "Fine-tuned Toxicity Model": "jjderz/toxic-classifier",
-}
+tweet_text = ""
+proceed = False
+selected_model = ""
+col1, col2, col3 = st.columns([2,1,1])
 
-chosen_model_label = st.selectbox("Select Model", options=list(model_choice.keys()))
-chosen_model = model_choice[chosen_model_label]
+with st.container():
+    selected_model = st.selectbox(
+        "Choose the desired model from the dropdown menu.",
+        ("ogtega/tweet-toxicity-classifier",),
+    )
+    proceed = st.button("Submit", type="primary", use_container_width=True)
 
-tokenizer = AutoTokenizer.from_pretrained(chosen_model)
-sequence_classifier = TFAutoModelForSequenceClassification.from_pretrained(chosen_model)
-sentiment_pipeline = pipeline(
-    "sentiment-analysis",
-    model=sequence_classifier,
-    tokenizer=tokenizer,
-    return_all_scores=True,
+token_processor = AutoTokenizer.from_pretrained(selected_model)
+model = SequenceClassificationModel.from_pretrained(selected_model)
+classifier = pipeline(
+    "sentiment-analysis", model=model, tokenizer=token_processor, return_all_scores=True
 )
 
-if st.button("Submit", type="primary"):
-    sentiment_results = sentiment_pipeline(input_text)[0]
+with col1:
+    st.subheader("Comment")
+    tweet_text = st.text_area("Enter text", sample_text, height=275)
 
-    # Find the highest scoring toxicity type
-    highest_toxicity_label = ""
-    highest_toxicity_score = 0
-    for result in sentiment_results:
-        if result["score"] > highest_toxicity_score:
-            highest_toxicity_label = result["label"]
-            highest_toxicity_score = result["score"]
+with col2:
+    st.subheader("Category")
 
-    # Create a DataFrame to display the results
-    data = {
-        "Tweet": [input_text[:50] + "..." if len(input_text) > 50 else input_text],
-        "Toxicity Class": [highest_toxicity_label],
-        "Probability": [f"{highest_toxicity_score:.2f}"],
-    }
-    df = pd.DataFrame(data)
-    st.write(df)
+with col3:
+    st.subheader("Likelihood")
+
+
+input_data = token_processor(tweet_text, return_tensors="tf")
+
+if proceed:
+    result_data = dict(d.values() for d in classifier(tweet_text)[0])
+    categories = {k: result_data[k] for k in result_data.keys() if not k == "toxic"}
+
+    top_category = max(categories, key=categories.get)
+
+    with col2:
+        st.write(f"#### {top_category}")
+
+    with col3:
+        st.write(f"#### **{categories[top_category]:.2f}%**")
+
+    if result_data["toxic"] < 0.5:
+        st.success("This tweet is likely not harmful!", icon=":white_check_mark:")
+    else:
+        st.warning("This tweet might be harmful.", icon=":warning:")
+    
+    expand_section = st.expander("Detailed output")
+    expand_section.write(result_data)
