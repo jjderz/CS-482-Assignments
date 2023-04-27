@@ -12,7 +12,6 @@ sample_text = "I hate you, you suck."
 comment = ""
 proceed = False
 selected_model = ""
-col1, col2, col3 = st.columns([2,1,1])
 
 with st.container():
     selected_model = st.selectbox(
@@ -27,16 +26,15 @@ classifier = pipeline(
     "sentiment-analysis", model=model, tokenizer=token_processor, return_all_scores=True
 )
 
-with col1:
+with st.container():
     st.subheader("Comment")
     comment = st.text_area("Enter text", sample_text, height=275)
 
-with col2:
+with st.container():
     st.subheader("Label")
 
-with col3:
+with st.container():
     st.subheader("Likelihood")
-
 
 input_data = token_processor(comment, return_tensors="tf")
 
@@ -46,10 +44,10 @@ if proceed:
 
     top_category = max(categories, key=categories.get)
 
-    with col2:
+    with st.container():
         st.write(f"#### {top_category}")
 
-    with col3:
+    with st.container():
         st.write(f"#### **{categories[top_category]:.2f}%**")
 
     if result_data["toxic"] < 0.5:
