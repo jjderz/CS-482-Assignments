@@ -19,7 +19,7 @@ with st.container():
         "Choose the desired model from the dropdown menu.",
         ("jjderz/toxic-classifier",),
     )
-    proceed = st.button("Submit", type="primary", use_container_width=True)
+    proceed = st.button("Submit", type="primary")
 
 token_processor = AutoTokenizer.from_pretrained(selected_model)
 model = SequenceClassificationModel.from_pretrained(selected_model)
@@ -32,7 +32,7 @@ with col1:
     comment = st.text_area("Enter text", sample_text, height=275)
 
 with col2:
-    st.subheader("Category")
+    st.subheader("Label")
 
 with col3:
     st.subheader("Likelihood")
