@@ -35,13 +35,18 @@ if proceed:
     result_data = dict(d.values() for d in classifier(comment)[0])
     categories = {k: result_data[k] for k in result_data.keys() if not k == "toxic"}
 
-    top_category = max(categories, key=categories.get)
+    if result_data["toxic"] < 0.5:
+        top_category = "Not Toxic"
+        probability = 1 - result_data["toxic"]
+    else:
+        top_category = max(categories, key=categories.get)
+        probability = categories[top_category]
 
     # Create a DataFrame for the table
     table_data = {
         "Tweet": [comment[:50]],
         "Toxicity Category": [top_category],
-        "Probability": [f"{categories[top_category]:.2f}%"],
+        "Probability": [f"{probability:.2f}%"],
     }
     results_df = pd.DataFrame(table_data)
 
