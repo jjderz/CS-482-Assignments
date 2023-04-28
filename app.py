@@ -19,7 +19,6 @@ with st.container():
         "Choose the desired model from the dropdown menu.",
         ("jjderz/toxic-classifier",),
     )
-    proceed = st.button("Submit", type="primary")
 
 token_processor = AutoTokenizer.from_pretrained(selected_model)
 model = SequenceClassificationModel.from_pretrained(selected_model)
@@ -28,6 +27,7 @@ classifier = pipeline(
 )
 
 comment = st.text_area("Enter text", sample_text, height=275)
+proceed = st.button("Submit", type="primary")
 
 input_data = token_processor(comment, return_tensors="tf")
 
