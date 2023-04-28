@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 from transformers import AutoTokenizer
 from transformers import (
     TFAutoModelForSequenceClassification as SequenceClassificationModel,
@@ -26,15 +27,7 @@ classifier = pipeline(
     "sentiment-analysis", model=model, tokenizer=token_processor, return_all_scores=True
 )
 
-with st.container():
-    st.subheader("Comment")
-    comment = st.text_area("Enter text", sample_text, height=275)
-
-with st.container():
-    st.subheader("Label")
-
-with st.container():
-    st.subheader("Likelihood")
+comment = st.text_area("Enter text", sample_text, height=275)
 
 input_data = token_processor(comment, return_tensors="tf")
 
@@ -44,16 +37,16 @@ if proceed:
 
     top_category = max(categories, key=categories.get)
 
-    with st.container():
-        st.write(f"#### {top_category}")
+    # Create a DataFrame for the table
+    table_data = {
+        "Tweet": [comment[:50]],
+        "Toxicity Category": [top_category],
+        "Probability": [f"{categories[top_category]:.2f}%"],
+    }
+    results_df = pd.DataFrame(table_data)
 
-    with st.container():
-        st.write(f"#### **{categories[top_category]:.2f}%**")
+    # Display the table
+    st.write(results_df)
 
-    if result_data["toxic"] < 0.5:
-        st.success("This comment isn't harmful!", icon=":white_check_mark:")
-    else:
-        st.warning("This comment is harmful.", icon=":warning:")
-    
     expand_section = st.expander("Detailed output")
     expand_section.write(result_data)
