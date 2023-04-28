@@ -31,6 +31,10 @@ proceed = st.button("Submit", type="primary")
 
 input_data = token_processor(comment, return_tensors="tf")
 
+# Initialize session state with an empty DataFrame
+if "results_df" not in st.session_state:
+    st.session_state.results_df = pd.DataFrame(columns=["Tweet", "Toxicity Category", "Probability"])
+
 if proceed:
     result_data = dict(d.values() for d in classifier(comment)[0])
     categories = {k: result_data[k] for k in result_data.keys() if not k == "toxic"}
@@ -42,16 +46,16 @@ if proceed:
         top_category = max(categories, key=categories.get)
         probability = categories[top_category]
 
-    # Create a DataFrame for the table
-    table_data = {
-        "Tweet": [comment[:50]],
-        "Toxicity Category": [top_category],
-        "Probability": [f"{probability:.2f}%"],
+    # Append a new row to the DataFrame
+    new_row = {
+        "Tweet": comment[:50],
+        "Toxicity Category": top_category,
+        "Probability": f"{probability:.2f}%",
     }
-    results_df = pd.DataFrame(table_data)
+    st.session_state.results_df = st.session_state.results_df.append(new_row, ignore_index=True)
 
-    # Display the table
-    st.write(results_df)
+    # Display the updated table
+    st.write(st.session_state.results_df)
 
     expand_section = st.expander("Detailed output")
     expand_section.write(result_data)
