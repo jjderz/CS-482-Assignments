@@ -41,7 +41,7 @@ if proceed:
 
     if result_data["toxic"] < 0.5:
         top_category = "Not Toxic"
-        probability = 1 - result_data["toxic"]
+        probability = result_data["toxic"]
     else:
         top_category = max(categories, key=categories.get)
         probability = categories[top_category]
